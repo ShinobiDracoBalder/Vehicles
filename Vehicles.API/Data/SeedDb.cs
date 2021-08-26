@@ -16,7 +16,11 @@ namespace Vehicles.API.Data
         public async Task SeedAsync()
         {
             await _dataContext.Database.EnsureCreatedAsync();
-            
+            await CheckVehiclesTypeAsync();
+            await CheckBrandsAsync();
+            await CheckDocumentTypesAsync();
+            await CheckProceduresAsync();
+
         }
         private async Task CheckRolesAsycn()
         {

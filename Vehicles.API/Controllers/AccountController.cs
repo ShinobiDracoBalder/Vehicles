@@ -19,5 +19,25 @@ namespace Vehicles.API.Controllers
         {
             return View();
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            //await _userHelper.LogoutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+        public IActionResult RecoverPassword()
+        {
+            return View();
+        }
+
     }
 }

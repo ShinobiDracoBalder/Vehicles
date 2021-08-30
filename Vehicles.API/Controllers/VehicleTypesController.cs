@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Vehicles.API.Data;
 using Vehicles.API.Data.Entities;
 
 namespace Vehicles.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class VehicleTypesController : Controller
     {
         private readonly DataContext _context;
@@ -33,7 +33,7 @@ namespace Vehicles.API.Controllers
                 return NotFound();
             }
 
-            var vehicleType = await _context.VehicleTypes
+            VehicleType vehicleType = await _context.VehicleTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicleType == null)
             {
@@ -91,7 +91,7 @@ namespace Vehicles.API.Controllers
                 return NotFound();
             }
 
-            var vehicleType = await _context.VehicleTypes.FindAsync(id);
+            VehicleType vehicleType = await _context.VehicleTypes.FindAsync(id);
             if (vehicleType == null)
             {
                 return NotFound();
@@ -104,7 +104,7 @@ namespace Vehicles.API.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,VehicleType vehicleType)
+        public async Task<IActionResult> Edit(int id, VehicleType vehicleType)
         {
             if (id != vehicleType.Id)
             {
@@ -146,7 +146,7 @@ namespace Vehicles.API.Controllers
                 return NotFound();
             }
 
-            var vehicleType = await _context.VehicleTypes
+            VehicleType vehicleType = await _context.VehicleTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (vehicleType == null)
             {

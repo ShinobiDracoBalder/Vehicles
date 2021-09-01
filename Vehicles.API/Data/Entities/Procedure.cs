@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Vehicles.API.Data.Entities
@@ -17,5 +18,6 @@ namespace Vehicles.API.Data.Entities
         [Column(TypeName = "decimal(18, 2)")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public decimal Price { get; set; }
+        public ICollection<Detail> Details { get; set; }
     }
 }

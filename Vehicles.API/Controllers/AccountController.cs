@@ -13,11 +13,13 @@ namespace Vehicles.API.Controllers
     {
         private readonly IUserHelper _userHelper;
         private readonly DataContext _dataContext;
+        private readonly ICombosHelper _combosHelper;
 
-        public AccountController(IUserHelper userHelper,DataContext context)
+        public AccountController(IUserHelper userHelper,DataContext context, ICombosHelper combosHelper)
         {
             _userHelper = userHelper;
             _dataContext = context;
+            _combosHelper = combosHelper;
         }
         public IActionResult Index()
         {

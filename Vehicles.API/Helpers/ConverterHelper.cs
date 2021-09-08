@@ -77,6 +77,7 @@ namespace Vehicles.API.Helpers
                 FirstName = user.FirstName,
                 Id = user.Id,
                 ImageId = user.ImageId,
+                PicturePath = user.PicturePath,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
                 UserType = user.UserType,

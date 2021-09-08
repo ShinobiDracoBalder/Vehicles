@@ -87,13 +87,14 @@ namespace Vehicles.API.Helpers
         public async Task<IdentityResult> UpdateUserAsync(User user)
         {
             User currentUser = await GetUserAsync(user.Email);
-            currentUser.LastName = user.LastName;
-            currentUser.FirstName = user.FirstName;
-            currentUser.DocumentType = user.DocumentType;
-            currentUser.Document = user.Document;
-            currentUser.Address = user.Address;
+            currentUser.LastName = user.LastName ?? currentUser.LastName;
+            currentUser.FirstName = user.FirstName ?? currentUser.FirstName;
+            currentUser.DocumentType = user.DocumentType?? currentUser.DocumentType;
+            currentUser.Document = user.Document?? currentUser.Document;
+            currentUser.Address = user.Address ?? currentUser.Address;
             currentUser.ImageId = user.ImageId;
-            currentUser.PhoneNumber = user.PhoneNumber;
+            currentUser.PicturePath = user.PicturePath;
+            currentUser.PhoneNumber = user.PhoneNumber ?? currentUser.PhoneNumber;
             return await _userManager.UpdateAsync(currentUser);
         }
     }

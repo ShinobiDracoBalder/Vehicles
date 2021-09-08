@@ -47,6 +47,8 @@ namespace Vehicles.API.Models
 
         [Display(Name = "Foto")]
         public IFormFile ImageFile { get; set; }
+        [Display(Name = "Picture")]
+        public string PicturePath { get; set; }
 
         [Display(Name = "Tipo de documento")]
         [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un tipo de documento.")]

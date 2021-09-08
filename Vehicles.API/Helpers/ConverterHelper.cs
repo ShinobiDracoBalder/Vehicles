@@ -57,6 +57,7 @@ namespace Vehicles.API.Helpers
                 FirstName = model.FirstName,
                 Id = isNew ? Guid.NewGuid().ToString() : model.Id,
                 ImageId = imageId,
+                PicturePath = model.PicturePath,
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
                 UserName = model.Email,

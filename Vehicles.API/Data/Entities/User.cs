@@ -33,6 +33,8 @@ namespace Vehicles.API.Data.Entities
 
         [Display(Name = "Foto")]
         public Guid ImageId { get; set; }
+        [Display(Name = "Picture")]
+        public string PicturePath { get; set; }
 
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty

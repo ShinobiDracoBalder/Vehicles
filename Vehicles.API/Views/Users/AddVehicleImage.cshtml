@@ -14,13 +14,13 @@
 
             <div class="form-group">
                 <label asp-for="ImageFile" class="control-label"></label>
-                <input asp-for="ImageFile" type="file" class="form-control" />
+                <input asp-for="ImageFile" type="file" class="form-control" style="float: left;text-align: center;border-radius: 60px;"/>
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-outline-primary" />
-                <a asp-action="EditVehicle" asp-route-id="@Model.VehicleId" class="btn btn-outline-success">Regresar</a>
+                <input type="submit" value="Crear" class="btn btn-outline-primary" style="float: left;text-align: center;border-radius: 60px;"/>
+                <a asp-action="EditVehicle" asp-route-id="@Model.VehicleId" class="btn btn-outline-success" style="float: left;text-align: center;border-radius: 60px;">Regresar</a>
             </div>
         </form>
     </div>

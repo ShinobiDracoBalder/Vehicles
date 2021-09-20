@@ -694,6 +694,5 @@ namespace Vehicles.API.Controllers
             await _dataContext.SaveChangesAsync();
             return RedirectToAction(nameof(DetailsHistory), new { id = detail.History.Id });
         }
-
     }
 }

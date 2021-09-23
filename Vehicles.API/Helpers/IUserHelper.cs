@@ -18,5 +18,6 @@ namespace Vehicles.API.Helpers
         Task LogoutAsync();
         Task<IdentityResult> UpdateUserAsync(User user);
         Task<IdentityResult> DeleteUserAsync(User user);
+        Task<SignInResult> ValidatePasswordAsync(User user, string password);
     }
 }

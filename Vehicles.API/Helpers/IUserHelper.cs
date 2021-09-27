@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Vehicles.API.Data.Entities;
 using Vehicles.API.Models;
+using Vehicles.Common.Enums;
 
 namespace Vehicles.API.Helpers
 {
@@ -19,5 +20,7 @@ namespace Vehicles.API.Helpers
         Task<IdentityResult> UpdateUserAsync(User user);
         Task<IdentityResult> DeleteUserAsync(User user);
         Task<SignInResult> ValidatePasswordAsync(User user, string password);
+        Task<User> AddUserAsync(AddUserViewModel model, Guid imageId, UserType userType);
+        Task<string> GenerateEmailConfirmationTokenAsync(User user);
     }
 }

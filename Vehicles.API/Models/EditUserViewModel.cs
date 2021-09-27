@@ -42,6 +42,9 @@ namespace Vehicles.API.Models
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string PhoneNumber { get; set; }
 
+        [Display(Name = "Picture")]
+        public string PicturePath { get; set; }
+
         [Display(Name = "Foto")]
         public Guid ImageId { get; set; }
 

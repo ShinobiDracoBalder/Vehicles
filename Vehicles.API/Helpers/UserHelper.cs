@@ -133,5 +133,9 @@ namespace Vehicles.API.Helpers
         {
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
+        public async Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword)
+        {
+            return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        }
     }
 }

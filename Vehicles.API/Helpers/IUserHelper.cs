@@ -22,5 +22,6 @@ namespace Vehicles.API.Helpers
         Task<SignInResult> ValidatePasswordAsync(User user, string password);
         Task<User> AddUserAsync(AddUserViewModel model, Guid imageId, UserType userType);
         Task<string> GenerateEmailConfirmationTokenAsync(User user);
+        Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword);
     }
 }

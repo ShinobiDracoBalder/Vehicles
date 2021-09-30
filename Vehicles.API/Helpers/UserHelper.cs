@@ -28,12 +28,10 @@ namespace Vehicles.API.Helpers
         {
             return await _userManager.CreateAsync(user, password);
         }
-
         public async Task AddUserToRoleAsync(User user, string roleName)
         {
             await _userManager.AddToRoleAsync(user, roleName);
         }
-
         public async Task CheckRoleAsync(string roleName)
         {
             bool roleExists = await _roleManager.RoleExistsAsync(roleName);
@@ -42,7 +40,6 @@ namespace Vehicles.API.Helpers
                 await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
             }
         }
-
         public async Task<User> GetUserAsync(string email)
         {
             return await _dataContext.Users
@@ -54,7 +51,6 @@ namespace Vehicles.API.Helpers
                 .ThenInclude(x => x.Details)
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
-
         public async Task<User> GetUserAsync(Guid id)
         {
             return await _dataContext.Users
@@ -66,7 +62,6 @@ namespace Vehicles.API.Helpers
                 .ThenInclude(x => x.Details)
                 .FirstOrDefaultAsync(x => x.Id == id.ToString());
         }
-
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
         {
             return await _userManager.IsInRoleAsync(user, roleName);
@@ -75,7 +70,6 @@ namespace Vehicles.API.Helpers
         {
             return await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
         }
-
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
@@ -84,7 +78,6 @@ namespace Vehicles.API.Helpers
         {
             return await _userManager.DeleteAsync(user);
         }
-
         public async Task<IdentityResult> UpdateUserAsync(User user)
         {
             User currentUser = await GetUserAsync(user.Email);
@@ -102,7 +95,6 @@ namespace Vehicles.API.Helpers
         {
             return await _signInManager.CheckPasswordSignInAsync(user, password, false);
         }
-
         public async Task<User> AddUserAsync(AddUserViewModel model, Guid imageId, UserType userType)
         {
             User user = new User
@@ -136,6 +128,20 @@ namespace Vehicles.API.Helpers
         public async Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword)
         {
             return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        }
+        public async Task<IdentityResult> ConfirmEmailAsync(User user, string token)
+        {
+            return await _userManager.ConfirmEmailAsync(user, token);
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(User user)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string password)
+        {
+            return await _userManager.ResetPasswordAsync(user, token, password);
         }
     }
 }

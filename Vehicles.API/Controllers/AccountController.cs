@@ -20,15 +20,17 @@ namespace Vehicles.API.Controllers
         private readonly ICombosHelper _combosHelper;
         private readonly IBlobHelper _blobHelper;
         private readonly IImageHelper _imageHelper;
+        private readonly IMailHelper _mailHelper;
 
         public AccountController(IUserHelper userHelper,DataContext context
-            , ICombosHelper combosHelper, IBlobHelper blobHelper, IImageHelper imageHelper)
+            , ICombosHelper combosHelper, IBlobHelper blobHelper, IImageHelper imageHelper, IMailHelper mailHelper)
         {
             _userHelper = userHelper;
             _dataContext = context;
             _combosHelper = combosHelper;
             _blobHelper = blobHelper;
             _imageHelper = imageHelper;
+            _mailHelper = mailHelper;
         }
         public IActionResult Index()
         {
@@ -160,11 +162,6 @@ namespace Vehicles.API.Controllers
 
             return View(model);
         }
-        public IActionResult RecoverPassword()
-        {
-            return View();
-        }
-
         public IActionResult Register()
         {
             AddUserViewModel model = new AddUserViewModel
@@ -174,6 +171,7 @@ namespace Vehicles.API.Controllers
 
             return View(model);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(AddUserViewModel model)
@@ -195,39 +193,115 @@ namespace Vehicles.API.Controllers
                     model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
                     return View(model);
                 }
+                //LoginViewModel loginViewModel = new LoginViewModel {
+                //    Password = model.Password,
+                //    RememberMe = false,
+                //    Username = model.Username, 
+                //};
 
-                LoginViewModel loginViewModel = new LoginViewModel {
-                    Password = model.Password,
-                    RememberMe = false,
-                    Username = model.Username, 
-                };
+                //var result2 = await _userHelper.LoginAsync(loginViewModel);
 
-                var result2 = await _userHelper.LoginAsync(loginViewModel);
-
-                if (result2.Succeeded){
-                    return RedirectToAction("Index", "Home");
-                }
-
-                //string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                //string tokenLink = Url.Action("ConfirmEmail", "Account", new
-                //{
-                //    userid = user.Id,
-                //    token = myToken
-                //}, protocol: HttpContext.Request.Scheme);
-
-                //Response response = _mailHelper.SendMail(model.Username, "Vehicles - Confirmación de cuenta", $"<h1>Vehicles - Confirmación de cuenta</h1>" +
-                //    $"Para habilitar el usuario, " +
-                //    $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
-                //if (response.IsSuccess)
-                //{
-                //    ViewBag.Message = "Las instrucciones para habilitar su cuenta han sido enviadas al correo.";
-                //    return View(model);
+                //if (result2.Succeeded){
+                //    return RedirectToAction("Index", "Home");
                 //}
 
-               // ModelState.AddModelError(string.Empty, response.Message);
+                string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                {
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
+
+                Response response = _mailHelper.SendMail(model.Username, "Vehicles - Confirmación de cuenta", $"<h1>Vehicles - Confirmación de cuenta</h1>" +
+                    $"Para habilitar el usuario, " +
+                    $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\" style='color: #8ebf42'>Confirmar Email</a>");
+                if (response.IsSuccess)
+                {
+                    ViewBag.Message = "Las instrucciones para habilitar su cuenta han sido enviadas al correo.";
+                    return View(model);
+                }
+
+                ModelState.AddModelError(string.Empty, response.Message);
+            }
+            model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+            return View(model);
+        }
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return NotFound();
             }
 
-            model.DocumentTypes = _combosHelper.GetComboDocumentTypes();
+            User user = await _userHelper.GetUserAsync(new Guid(userId));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            IdentityResult result = await _userHelper.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                return NotFound();
+            }
+
+            return View();
+        }
+        public IActionResult RecoverPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = await _userHelper.GetUserAsync(model.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "El correo ingresado no corresponde a ningún usuario.");
+                    return View(model);
+                }
+
+                string myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+                string link = Url.Action(
+                    "ResetPassword",
+                    "Account",
+                    new { token = myToken }, protocol: HttpContext.Request.Scheme);
+                _mailHelper.SendMail(model.Email, "Vehicles - Reseteo de contraseña", $"<h1>Vehicles - Reseteo de contraseña</h1>" +
+                    $"Para establecer una nueva contraseña haga clic en el siguiente enlace:</br></br>" +
+                    $"<a href = \"{link}\">Cambio de Contraseña</a>");
+                ViewBag.Message = "Las instrucciones para el cambio de contraseña han sido enviadas a su email.";
+                return View();
+
+            }
+
+            return View(model);
+        }
+
+        public IActionResult ResetPassword(string token)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            User user = await _userHelper.GetUserAsync(model.UserName);
+            if (user != null)
+            {
+                IdentityResult result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    ViewBag.Message = "Contaseña cambiada.";
+                    return View();
+                }
+
+                ViewBag.Message = "Error cambiando la contraseña.";
+                return View(model);
+            }
+
+            ViewBag.Message = "Usuario no encontrado.";
             return View(model);
         }
     }

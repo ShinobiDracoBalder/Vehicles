@@ -23,10 +23,11 @@ namespace Vehicles.API.Controllers
         private readonly IConverterHelper _converterHelper;
         private readonly IBlobHelper _blobHelper;
         private readonly IImageHelper _imageHelper;
+        private readonly IMailHelper _mailHelper;
 
         public UsersController(DataContext dataContext, IUserHelper userHelper,
             ICombosHelper combosHelper, IConverterHelper converterHelper,
-            IBlobHelper blobHelper, IImageHelper imageHelper)
+            IBlobHelper blobHelper, IImageHelper imageHelper, IMailHelper mailHelper)
         {
             _dataContext = dataContext;
             _userHelper = userHelper;
@@ -34,6 +35,7 @@ namespace Vehicles.API.Controllers
             _converterHelper = converterHelper;
             _blobHelper = blobHelper;
             _imageHelper = imageHelper;
+            _mailHelper = mailHelper;
         }
         public async Task<IActionResult> Index(){
             return View(await _dataContext.Users
@@ -70,16 +72,16 @@ namespace Vehicles.API.Controllers
                 await _userHelper.AddUserAsync(user, "D123456");
                 await _userHelper.AddUserToRoleAsync(user, user.UserType.ToString());
 
-                //string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                //string tokenLink = Url.Action("ConfirmEmail", "Account", new
-                //{
-                //    userid = user.Id,
-                //    token = myToken
-                //}, protocol: HttpContext.Request.Scheme);
+                string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                {
+                    userid = user.Id,
+                    token = myToken
+                }, protocol: HttpContext.Request.Scheme);
 
-                //Response response = _mailHelper.SendMail(model.Email, "Vehicles - Confirmación de cuenta", $"<h1>Vehicles - Confirmación de cuenta</h1>" +
-                //    $"Para habilitar el usuario, " +
-                //    $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
+                Response response = _mailHelper.SendMail(model.Email, "Vehicles - Confirmación de cuenta", $"<h1>Vehicles - Confirmación de cuenta</h1>" +
+                    $"Para habilitar el usuario, " +
+                    $"por favor hacer clic en el siguiente enlace: </br></br><a href = \"{tokenLink}\">Confirmar Email</a>");
 
                 return RedirectToAction(nameof(Index));
             }

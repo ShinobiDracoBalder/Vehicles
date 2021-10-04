@@ -1,7 +1,5 @@
-﻿
-
-using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Vehicles.API.Data.Entities
 {
@@ -16,6 +14,7 @@ namespace Vehicles.API.Data.Entities
 
         [Display(Name = "Procedimiento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [JsonIgnore]
         public Procedure Procedure { get; set; }
 
         [Display(Name = "Precio Mano de Obra")]

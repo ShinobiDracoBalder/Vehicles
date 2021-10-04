@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Vehicles.API.Data.Entities
 {
@@ -8,6 +9,7 @@ namespace Vehicles.API.Data.Entities
         public int Id { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [JsonIgnore]
         public Vehicle Vehicle { get; set; }
 
         [Display(Name = "Foto")]

@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Vehicles.API.Data.Entities
 {
@@ -48,6 +48,7 @@ namespace Vehicles.API.Data.Entities
         [DataType(DataType.MultilineText)]
         public string Remarks { get; set; }
 
+        [JsonIgnore]
         public ICollection<VehiclePhoto> VehiclePhotos { get; set; }
 
         [Display(Name = "# Fotos")]
@@ -57,7 +58,7 @@ namespace Vehicles.API.Data.Entities
         public string ImageFullPath => VehiclePhotos == null || VehiclePhotos.Count == 0
             ? $"https://localhost:44345/images/noimage.png"
             : VehiclePhotos.FirstOrDefault().ImageFullPath;
-
+        [JsonIgnore]
         public ICollection<History> Histories { get; set; }
 
         [Display(Name = "# Historias")]
